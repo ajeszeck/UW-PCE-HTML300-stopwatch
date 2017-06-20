@@ -2,12 +2,13 @@
 const start = document.querySelector("button.start")
 const stop = document.querySelector("button.stop")
 const lap = document.querySelector("button.lap")
+const reset = document.querySelector("button.reset")
 //DOM elements that I need to update
-const lapList = document.querySelector("#laplist")
-const stopwatch = document.querySelector("#stopwatch")
+const lapList = document.querySelector("#lapList")
+const stopwatch = document.querySelector("#stopwatchTime")
 
 //constants that I should never change
-const laps = []
+var laps = []
 const intervalRate = 10 //every 10 ms
 
 //values that will change pretty often
@@ -30,7 +31,6 @@ function formatTime (raw) {
 function stopwatchStart(event) {
   event.preventDefault()
   console.log("started")
-
   //every ten milliseconds, update the stopwatch
   intervalId = setInterval(stopwatchUpdate, intervalRate)
 }
@@ -51,13 +51,22 @@ function lapRecorder() {
   let currentTime = stopwatchTime.innerHTML;
   laps.push(currentTime);
   lapList.innerHTML = "";
-
   for (var i = 0; i < laps.length; i++) {
+    var ul = document.createElement("ul");
     var currentLap = laps[i];
     var li = document.createElement("li");
     li.innerHTML = currentLap;
-    lapList.appendChild(li);
+    ul.appendChild(li);
+    lapList.appendChild(ul);
   }
+}
+
+function resetWatch () {
+  console.log("reset!");
+  clearInterval(intervalId);
+  laps = [];
+  lapList.innerHTML = "";
+  stopwatchTime.innerHTML = formatTime(0);
 }
 //adds the interval to the stopwatch time since the last tick.
 //then update the dom with the new stopwatch time
@@ -77,4 +86,5 @@ document.addEventListener("DOMContentLoaded", function () {
   start.addEventListener("click", stopwatchStart)
   stop.addEventListener("click", stopwatchStop)
   lap.addEventListener("click", lapRecorder)
+  reset.addEventListener("click", resetWatch)
 })
