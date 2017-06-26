@@ -15,8 +15,8 @@ const intervalRate = 10 //every 10 ms
 let intervalId = null
 let rawTime = 0
 
-
-
+var clicked = false;
+var stopClick = false;
 // turns the time into a human readable format
 function formatTime (raw) {
   let seconds = Math.floor(raw / 1000)
@@ -30,34 +30,43 @@ function formatTime (raw) {
 //we will store the interval id so we can manipulate interval later
 function stopwatchStart(event) {
   event.preventDefault()
-  console.log("started")
-  //every ten milliseconds, update the stopwatch
-  intervalId = setInterval(stopwatchUpdate, intervalRate)
+  if (clicked == false) {
+    console.log("started")
+    //every ten milliseconds, update the stopwatch
+    intervalId = setInterval(stopwatchUpdate, intervalRate)
+    clicked = true
+    stopClick = false;
+  }
+
 }
 
 //stops the stopwatch by clearing the interval
 function stopwatchStop(event) {
   event.preventDefault()
+  clicked = false
   console.log("stopped")
   //clear the interval
   clearInterval(intervalId)
+  stopClick = true;
 }
 
 //lap function to take a snapshot time when button is clicked
 //adds to lapList div
 function lapRecorder() {
   event.preventDefault();
-  console.log("lap recorded!");
-  let currentTime = stopwatchTime.innerHTML;
-  laps.push(currentTime);
-  lapList.innerHTML = "";
-  for (var i = 0; i < laps.length; i++) {
-    var ul = document.createElement("ul");
-    var currentLap = laps[i];
-    var li = document.createElement("li");
-    li.innerHTML = currentLap;
-    ul.appendChild(li);
-    lapList.appendChild(ul);
+  if (stopClick == false) {
+    console.log("lap recorded!");
+    let currentTime = stopwatchTime.innerHTML;
+    laps.push(currentTime);
+    lapList.innerHTML = "";
+    for (var i = 0; i < laps.length; i++) {
+      var ul = document.createElement("ul");
+      var currentLap = laps[i];
+      var li = document.createElement("li");
+      li.innerHTML = currentLap;
+      ul.appendChild(li);
+      lapList.appendChild(ul);
+    }
   }
 }
 
@@ -66,7 +75,9 @@ function resetWatch () {
   clearInterval(intervalId);
   laps = [];
   lapList.innerHTML = "";
-  stopwatchTime.innerHTML = formatTime(0);
+  rawTime = 0;
+  stopwatchTime.innerHTML = formatTime(rawTime);
+  clicked = false;
 }
 //adds the interval to the stopwatch time since the last tick.
 //then update the dom with the new stopwatch time
