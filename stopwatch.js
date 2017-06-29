@@ -15,7 +15,7 @@ const intervalRate = 10 //every 10 ms
 let intervalId = null
 let rawTime = 0
 
-var clicked = false;
+var startClick = false;
 var stopClick = false;
 // turns the time into a human readable format
 function formatTime (raw) {
@@ -30,11 +30,11 @@ function formatTime (raw) {
 //we will store the interval id so we can manipulate interval later
 function stopwatchStart(event) {
   event.preventDefault()
-  if (clicked == false) {
+  if (startClick == false) {
     console.log("started")
     //every ten milliseconds, update the stopwatch
     intervalId = setInterval(stopwatchUpdate, intervalRate)
-    clicked = true
+    startClick = true
     stopClick = false;
   }
 
@@ -43,7 +43,7 @@ function stopwatchStart(event) {
 //stops the stopwatch by clearing the interval
 function stopwatchStop(event) {
   event.preventDefault()
-  clicked = false
+  startClick = false
   console.log("stopped")
   //clear the interval
   clearInterval(intervalId)
@@ -77,7 +77,7 @@ function resetWatch () {
   lapList.innerHTML = "";
   rawTime = 0;
   stopwatchTime.innerHTML = formatTime(rawTime);
-  clicked = false;
+  startClick = false;
 }
 //adds the interval to the stopwatch time since the last tick.
 //then update the dom with the new stopwatch time
